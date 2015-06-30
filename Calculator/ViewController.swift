@@ -17,24 +17,26 @@ class ViewController: UIViewController {
         case FinishInput1
         case DuringInput2
         case Calculated
+        case ShowingError
     }
     
     // エラー種類。エラー時に表示する文字列も一緒に定義。
     enum ErrorType {
         case ZeroDivide
         case Overflow
+
         func toString() -> String {
             switch self {
             case .ZeroDivide:
-                return "エラー:0除算"
+                return "Error:0 divide"
             case .Overflow:
-                return "エラー:オーバーフロー"
+                return "Error:Overflow"
             }
         }
     }
 
     //----- field -----//
-    // 初期状態は第1数入力中
+    // 初期状態は第1オペランド入力中
     var state = CalcState.DuringInput1
 
     // 入力(文字列)
@@ -48,6 +50,9 @@ class ViewController: UIViewController {
     // 数字キー
     @IBAction func buttonDigit(sender: UIButton) {
         switch state {
+        case .ShowingError:
+            display.text = sender.currentTitle!
+            break
         case .DuringInput1:
             if display.text == "0" {
                 display.text = sender.currentTitle!
@@ -78,6 +83,7 @@ class ViewController: UIViewController {
         }
     }
 
+    // 表示文字列に押された数値を追加
     func addDigitString(base: String, add:String) -> String {
         let NUM_OF_DIGIT_MAX = 10
         if let r = base.rangeOfString(".") {
@@ -171,6 +177,8 @@ class ViewController: UIViewController {
         case "÷":
             if second == 0 {
                 showError(ErrorType.ZeroDivide)
+                setErrorState()
+                return
             } else {
                 result = first / second
             }
@@ -181,52 +189,43 @@ class ViewController: UIViewController {
 
         if result >= DBL_MAX {
             showError(ErrorType.Overflow)
+            setErrorState()
         } else {
             display.text = hoge(result)
+            // 現在の表示を第1オペランドに
+            val1str = display.text!
         }
-
-        // 現在の表示を第1オペランドに
-        val1str = display.text!
     }
 
     func hoge(var value:Double) -> String {
-        if value >= 1.0e+10 {
-            var i: Int
-            for i = 0; value >= 10.0; i++ {
-                value /= 10
-            }
-            let str = cutoff(String("\(value)"), needRound:true) + String("e+\(i)")
-            println(str)
-            return str
-        } else if value <= 1.0e-8 {
-            var i: Int
-            for i = 0; value < 1.0; i++ {
-                value *= 10
-            }
-            let str = cutoff(String("\(value)"), needRound:true) + String("e-\(i)")
-            println("hoge: value:\(value)")
-            println("hoge: \(str)")
-            return str
+        var valueStr = cutoff(String("\(value)"))  // ".0"落とす
+        if countElements(valueStr) > 10 {
+            // 10桁(符号、小数点含む...)超えた場合は指数表示にして丸める
+            valueStr = "".stringByAppendingFormat("%e", value)
+            let r = valueStr.rangeOfString("e")
+            let idx = advance(r!.startIndex, 0)
+            let editedStr = cutoff(valueStr.substringToIndex(idx)) + valueStr.substringFromIndex(idx)
+            return editedStr
         }
-        return cutoff(String("\(value)"), needRound:false)
+        return cutoff(String("\(value)"))
     }
 
-    func cutoff(var text: String, needRound: Bool) -> String {
+    func cutoff(var text: String) -> String {
         if let r = text.rangeOfString(".") {
             let idx = advance(r.startIndex, 1)
             if atoi(text.substringFromIndex(idx)) == 0 {
                 // 小数点以下が値を持たない場合、整数部だけの文字列に
                 let integerIdx = advance(r.startIndex, 0)
                 return text.substringToIndex(integerIdx)
-            } else if needRound {
-                // 10の累乗表示する場合、小数点以下6桁で値を丸める
-                let ORDER_OF_DISP = 1000000.0
-                var num = round(atof(text) * ORDER_OF_DISP) / ORDER_OF_DISP
-                println("num:\(num)")
-                return String("\(num)")
             }
         }
         return text
+    }
+    
+    func setErrorState() {
+        val1str = ""
+        val2str = ""
+        state = CalcState.ShowingError
     }
     
     func setup() {
