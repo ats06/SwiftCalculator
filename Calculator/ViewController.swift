@@ -86,17 +86,25 @@ class ViewController: UIViewController {
         }
     }
 
+    // 表示桁数におさまっているか判定
+    func isInCapacity(str: String) -> Bool {
+        let NUM_OF_DIGIT_MAX = 10
+        var isCapa = false
+        if let r = str.rangeOfString(".") {
+            if countElements(str) <= (NUM_OF_DIGIT_MAX + 1) {
+                isCapa = true
+            }
+        } else if countElements(str) <= NUM_OF_DIGIT_MAX {
+            isCapa = true
+        }
+        return isCapa
+    }
+
     // 表示文字列に押された数値を追加
     func addDigitString(base: String, add:String) -> String {
-        let NUM_OF_DIGIT_MAX = 10
-        if let r = base.rangeOfString(".") {
-            if base.utf16Count < (NUM_OF_DIGIT_MAX + 1) {
-                return base + add
-            }
-        } else {
-            if base.utf16Count < NUM_OF_DIGIT_MAX {
-                return base + add
-            }
+        var appendedStr = base + add
+        if isInCapacity(appendedStr) {
+            return appendedStr
         }
         return base
     }
@@ -204,17 +212,17 @@ class ViewController: UIViewController {
             showError(ErrorType.Underflow)
             setErrorState()
         } else {
-            display.text = hoge(result)
+            display.text = makeTextForDisp(result)
             // 現在の表示を第1オペランドに
             val1str = display.text!
             firstOperandLabel.text = ""
         }
     }
 
-    func hoge(var value:Double) -> String {
+    func makeTextForDisp(var value:Double) -> String {
         var valueStr = cutoffDecimalZero(String("\(value)"))  // ".0"落とす
-        if countElements(valueStr) > 10 {
-            // 10桁(符号、小数点含む...)超えた場合は指数表示にして丸める
+        if !isInCapacity(valueStr) {
+            // 10桁超えた場合は指数表示にして丸める
             valueStr = "".stringByAppendingFormat("%e", value)
             let r = valueStr.rangeOfString("e")
             let idx = advance(r!.startIndex, 0)
@@ -226,7 +234,7 @@ class ViewController: UIViewController {
 
     // 小数点以下の余分な'0'を切り落とし
     func cutoffDecimalZero(var text: String) -> String {
-        text = "".stringByAppendingFormat("%g", atof(text))
+        text = "".stringByAppendingFormat("%.10g", atof(text))
         return text
     }
     
