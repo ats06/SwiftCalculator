@@ -108,7 +108,7 @@ class ViewController: UIViewController {
         }
         return base
     }
-    
+
     // + - * / オペレーターボタン
     @IBAction func buttonOperator(sender: UIButton) {
         switch state {
@@ -147,15 +147,15 @@ class ViewController: UIViewController {
 
     // 'C'ボタン
     @IBAction func buttonClear(sender: AnyObject) {
-        if display.text == "0" {
+        if state == CalcState.DuringInput2 {
+            state = CalcState.FinishInput1
+        } else {
             val1str = ""
             firstOperandLabel.text = ""
+            operatorLabel.text = ""
             state = CalcState.DuringInput1
-        } else {
-            val2str = ""
-            display.text = "0"
         }
-        operatorLabel.text = ""
+        display.text = "0"
     }
 
     // '.'ボタン
@@ -237,7 +237,7 @@ class ViewController: UIViewController {
         text = "".stringByAppendingFormat("%.10g", atof(text))
         return text
     }
-    
+
     func setErrorState() {
         val1str = ""
         val2str = ""
@@ -249,7 +249,7 @@ class ViewController: UIViewController {
         display.layer.borderColor = UIColor.blackColor().CGColor
         display.layer.borderWidth = 0.5
         display.layer.cornerRadius = 5
-        
+
         firstOperandLabel.text = ""
         operatorLabel.text = ""
     }
