@@ -198,27 +198,20 @@ class ViewController: UIViewController {
     }
 
     func hoge(var value:Double) -> String {
-        var valueStr = cutoff(String("\(value)"))  // ".0"落とす
+        var valueStr = cutoffDecimalZero(String("\(value)"))  // ".0"落とす
         if countElements(valueStr) > 10 {
             // 10桁(符号、小数点含む...)超えた場合は指数表示にして丸める
             valueStr = "".stringByAppendingFormat("%e", value)
             let r = valueStr.rangeOfString("e")
             let idx = advance(r!.startIndex, 0)
-            let editedStr = cutoff(valueStr.substringToIndex(idx)) + valueStr.substringFromIndex(idx)
+            let editedStr = cutoffDecimalZero(valueStr.substringToIndex(idx)) + valueStr.substringFromIndex(idx)
             return editedStr
         }
-        return cutoff(String("\(value)"))
+        return valueStr
     }
 
-    func cutoff(var text: String) -> String {
-        if let r = text.rangeOfString(".") {
-            let idx = advance(r.startIndex, 1)
-            if atoi(text.substringFromIndex(idx)) == 0 {
-                // 小数点以下が値を持たない場合、整数部だけの文字列に
-                let integerIdx = advance(r.startIndex, 0)
-                return text.substringToIndex(integerIdx)
-            }
-        }
+    func cutoffDecimalZero(var text: String) -> String {
+        text = "".stringByAppendingFormat("%g", atof(text))
         return text
     }
     
