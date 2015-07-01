@@ -13,8 +13,8 @@ class ViewController: UIViewController {
     //----- enum -----//
     // 計算機状態定義
     enum CalcState {
-        case DuringInput1
-        case FinishInput1
+        case DuringInput1   // 第1オペランド入力中
+        case FinishInput1   // 第1オペランド入力終了(第2オペランドの入力開始を知るための状態)
         case DuringInput2
         case Calculated
         case ShowingError
@@ -24,6 +24,7 @@ class ViewController: UIViewController {
     enum ErrorType {
         case ZeroDivide
         case Overflow
+        case Underflow
 
         func toString() -> String {
             switch self {
@@ -31,6 +32,8 @@ class ViewController: UIViewController {
                 return "Error:0 divide"
             case .Overflow:
                 return "Error:Overflow"
+            case .Underflow:
+                return "Error:Underflow"
             }
         }
     }
@@ -46,7 +49,11 @@ class ViewController: UIViewController {
 
     // 入出力/結果 表示Label
     @IBOutlet weak var display: UILabel!
-    
+    // 第1オペランド表示Label
+    @IBOutlet weak var firstOperandLabel: UILabel!
+    // 選択中のオペレータ表示Label
+    @IBOutlet weak var operatorLabel: UILabel!
+
     // 数字キー
     @IBAction func buttonDigit(sender: UIButton) {
         switch state {
@@ -59,24 +66,20 @@ class ViewController: UIViewController {
             } else {
                 display.text = addDigitString(display.text!, add:sender.currentTitle!)
             }
-            println("\(CalcState.DuringInput1) disp:\(display.text) val1:\(val1str) val2:\(val2str)")
             break
         case .FinishInput1:
-            val1str = display.text!
             display.text = "" + sender.currentTitle!
             state = CalcState.DuringInput2
-            println("\(CalcState.FinishInput1) disp:\(display.text) val1:\(val1str) val2:\(val2str)")
             break
         case .DuringInput2:
             display.text = addDigitString(display.text!, add:sender.currentTitle!)
-            println("\(CalcState.DuringInput2) disp:\(display.text) val1:\(val1str) val2:\(val2str)")
             break
         case .Calculated:
             val1str = ""
             val2str = ""
             display.text = sender.currentTitle!
+            operatorLabel.text = ""
             state = CalcState.DuringInput1
-            println("\(CalcState.Calculated) disp:\(display.text) val1:\(val1str) val2:\(val2str)")
             break
         default:
             break
@@ -111,8 +114,12 @@ class ViewController: UIViewController {
         default:
             break
         }
-        state = CalcState.FinishInput1
+        
+        val1str = display.text!
+        firstOperandLabel.text = val1str
+        operatorLabel.text = sender.currentTitle
         operatorType = sender.currentTitle!
+        state = CalcState.FinishInput1
     }
 
     // '='ボタン
@@ -135,11 +142,13 @@ class ViewController: UIViewController {
     @IBAction func buttonClear(sender: AnyObject) {
         if display.text == "0" {
             val1str = ""
+            firstOperandLabel.text = ""
             state = CalcState.DuringInput1
         } else {
             val2str = ""
             display.text = "0"
         }
+        operatorLabel.text = ""
     }
 
     // '.'ボタン
@@ -154,6 +163,8 @@ class ViewController: UIViewController {
     // display Labelにエラー文字列をセットして表示
     func showError(errorType: ErrorType) {
         display.text = errorType.toString()
+        firstOperandLabel.text = ""
+        operatorLabel.text = ""
     }
 
     // これまでの入力値から計算 -> 値の保持とセットで別クラスに切り出したい。余裕あればやる。
@@ -190,10 +201,14 @@ class ViewController: UIViewController {
         if result >= DBL_MAX {
             showError(ErrorType.Overflow)
             setErrorState()
+        } else if result <= DBL_MIN {
+            showError(ErrorType.Underflow)
+            setErrorState()
         } else {
             display.text = hoge(result)
             // 現在の表示を第1オペランドに
             val1str = display.text!
+            firstOperandLabel.text = ""
         }
     }
 
@@ -210,6 +225,7 @@ class ViewController: UIViewController {
         return valueStr
     }
 
+    // 小数点以下の余分な'0'を切り落とし
     func cutoffDecimalZero(var text: String) -> String {
         text = "".stringByAppendingFormat("%g", atof(text))
         return text
@@ -223,6 +239,12 @@ class ViewController: UIViewController {
     
     func setup() {
         display.text = "0"
+        display.layer.borderColor = UIColor.blackColor().CGColor
+        display.layer.borderWidth = 0.5
+        display.layer.cornerRadius = 5
+        
+        firstOperandLabel.text = ""
+        operatorLabel.text = ""
     }
 
     override func viewDidLoad() {
