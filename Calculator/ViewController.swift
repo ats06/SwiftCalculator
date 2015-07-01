@@ -15,9 +15,9 @@ class ViewController: UIViewController {
     enum CalcState {
         case DuringInput1   // 第1オペランド入力中
         case FinishInput1   // 第1オペランド入力終了(第2オペランドの入力開始を知るための状態)
-        case DuringInput2
-        case Calculated
-        case ShowingError
+        case DuringInput2   // 第2オペランド入力中
+        case Calculated     // 計算結果表示中
+        case ShowingError   // エラー表示中
     }
     
     // エラー種類。エラー時に表示する文字列も一緒に定義。
@@ -109,7 +109,6 @@ class ViewController: UIViewController {
             Calculate()
             break
         case .Calculated:
-            val1str = display.text!
             val2str = ""
         default:
             break
@@ -201,7 +200,7 @@ class ViewController: UIViewController {
         if result >= DBL_MAX {
             showError(ErrorType.Overflow)
             setErrorState()
-        } else if result <= DBL_MIN {
+        } else if 0.0 < result && result <= DBL_MIN {
             showError(ErrorType.Underflow)
             setErrorState()
         } else {
