@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
 
     //----- enum -----//
     // 計算機状態定義
@@ -53,6 +53,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var firstOperandLabel: UILabel!
     // 選択中のオペレータ表示Label
     @IBOutlet weak var operatorLabel: UILabel!
+    // 税率入力
+    @IBOutlet weak var taxTextField: UITextField!
 
     // 数字キー
     @IBAction func buttonDigit(sender: UIButton) {
@@ -167,6 +169,14 @@ class ViewController: UIViewController {
         }
     }
 
+    // 'TAX'ボタン
+    @IBAction func buttonTax(sender: AnyObject) {
+        val1str = display.text!
+        val2str = String("\((100.0 + atof(taxTextField.text)) / 100.0)")
+        operatorType = "×"
+        Calculate()
+    }
+
     // display Labelにエラー文字列をセットして表示
     func showError(errorType: ErrorType) {
         display.text = errorType.toString()
@@ -243,6 +253,15 @@ class ViewController: UIViewController {
         val2str = ""
         state = CalcState.ShowingError
     }
+
+    // text fieldの入力でreturn押されたらキーボード閉じる
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        taxTextField.resignFirstResponder()
+        return true
+    }
+    @IBAction func tapGestureRecognizer(sender: AnyObject) {
+        taxTextField.resignFirstResponder()
+    }
     
     func setup() {
         display.text = "0"
@@ -252,6 +271,8 @@ class ViewController: UIViewController {
 
         firstOperandLabel.text = ""
         operatorLabel.text = ""
+        
+        taxTextField.delegate = self
     }
 
     override func viewDidLoad() {
