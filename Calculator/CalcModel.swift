@@ -38,8 +38,10 @@ class CalcModel {
     var operand2: String = "0"
     var operatorType: String = ""
 
+    //----- method -----//
+    // 計算実行
+    // 有効数字は10桁を最大とする。ただし指数表示の場合は有効数字を6桁とする。
     func calculate() -> (result: String, error: ErrorType) {
-
         let val1 = atof(operand1)
         let val2 = atof(operand2)
         var result: Double = 0.0
