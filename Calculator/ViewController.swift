@@ -19,29 +19,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
         case Calculated     // 計算結果表示中
         case ShowingError   // エラー表示中
     }
-    
-    // エラー種類。エラー時に表示する文字列も一緒に定義。
-    enum ErrorType {
-        case ZeroDivide
-        case Overflow
-        case Underflow
-
-        func toString() -> String {
-            switch self {
-            case .ZeroDivide:
-                return "Error:0 divide"
-            case .Overflow:
-                return "Error:Overflow"
-            case .Underflow:
-                return "Error:Underflow"
-            }
-        }
-    }
 
     //----- field -----//
     var calcModel: CalcModel = CalcModel()
-    
-    
+
     // 計算機状態管理
     var state = CalcState.DuringInput1
 
@@ -180,14 +161,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         Calculate()
     }
 
-    // display Labelにエラー文字列をセットして表示
-    func showError(errorType: ErrorType) {
-        display.text = errorType.toString()
-        firstOperandLabel.text = ""
-        operatorLabel.text = ""
-    }
-
-    // これまでの入力値から計算 -> 値の保持とセットで別クラスに切り出したい。余裕あればやる。
+    // これまでの入力値から計算
     func Calculate() {
         calcModel.operand1 = val1str
         calcModel.operand2 = val2str
@@ -201,6 +175,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         } else {
             val1str = ""
             val2str = ""
+            firstOperandLabel.text = ""
             state = CalcState.ShowingError
         }
     }
