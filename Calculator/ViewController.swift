@@ -39,7 +39,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
 
     //----- field -----//
-    // 初期状態は第1オペランド入力中
+    var calcModel: CalcModel = CalcModel()
+    
+    
+    // 計算機状態管理
     var state = CalcState.DuringInput1
 
     // 入力(文字列)
@@ -70,7 +73,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             }
             break
         case .FinishInput1:
-            display.text = "" + sender.currentTitle!
+            display.text = sender.currentTitle!
             state = CalcState.DuringInput2
             break
         case .DuringInput2:
@@ -186,72 +189,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
     // これまでの入力値から計算 -> 値の保持とセットで別クラスに切り出したい。余裕あればやる。
     func Calculate() {
-        // doubleの有効桁数は15桁程度
-        // -> http://www.cc.kyoto-su.ac.jp/~yamada/programming/float.html#double
-        let first: Double = atof(val1str)
-        let second: Double = atof(val2str)
-        var result: Double = 0.0
-
-        switch operatorType {
-        case "+":
-            result = first + second
-            break
-        case "-":
-            result = first - second
-            break
-        case "×":
-            result = first * second
-            break
-        case "÷":
-            if second == 0 {
-                showError(ErrorType.ZeroDivide)
-                setErrorState()
-                return
-            } else {
-                result = first / second
-            }
-            break
-        default:
-            break
-        }
-
-        if result >= DBL_MAX {
-            showError(ErrorType.Overflow)
-            setErrorState()
-        } else if 0.0 < result && result <= DBL_MIN {
-            showError(ErrorType.Underflow)
-            setErrorState()
-        } else {
-            display.text = makeTextForDisp(result)
-            // 現在の表示を第1オペランドに
+        calcModel.operand1 = val1str
+        calcModel.operand2 = val2str
+        calcModel.operatorType = operatorType
+        
+        var out = calcModel.calculate()
+        display.text = out.result
+        if out.error == CalcModel.ErrorType.Ok {
             val1str = display.text!
             firstOperandLabel.text = ""
+        } else {
+            val1str = ""
+            val2str = ""
+            state = CalcState.ShowingError
         }
-    }
-
-    func makeTextForDisp(var value:Double) -> String {
-        var valueStr = cutoffDecimalZero(String("\(value)"))  // ".0"落とす
-        if !isInCapacity(valueStr) {
-            // 10桁超えた場合は指数表示にして丸める
-            valueStr = "".stringByAppendingFormat("%e", value)
-            let r = valueStr.rangeOfString("e")
-            let idx = advance(r!.startIndex, 0)
-            let editedStr = cutoffDecimalZero(valueStr.substringToIndex(idx)) + valueStr.substringFromIndex(idx)
-            return editedStr
-        }
-        return valueStr
-    }
-
-    // 小数点以下の余分な'0'を切り落とし
-    func cutoffDecimalZero(var text: String) -> String {
-        text = "".stringByAppendingFormat("%.10g", atof(text))
-        return text
-    }
-
-    func setErrorState() {
-        val1str = ""
-        val2str = ""
-        state = CalcState.ShowingError
     }
 
     // text fieldの入力でreturn押されたらキーボード閉じる
@@ -259,6 +210,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         taxTextField.resignFirstResponder()
         return true
     }
+    // text fieldの入力でキーボード外をタッチされたらキーボード閉じる
     @IBAction func tapGestureRecognizer(sender: AnyObject) {
         taxTextField.resignFirstResponder()
     }

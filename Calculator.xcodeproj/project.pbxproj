@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F91EDDFC1B4578AD00BE7DE2 /* CalcModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91EDDFB1B4578AD00BE7DE2 /* CalcModel.swift */; };
 		F9C3AB261B31B5F7008DCA7E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C3AB251B31B5F7008DCA7E /* AppDelegate.swift */; };
 		F9C3AB281B31B5F7008DCA7E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C3AB271B31B5F7008DCA7E /* ViewController.swift */; };
 		F9C3AB2B1B31B5F7008DCA7E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9C3AB291B31B5F7008DCA7E /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F91EDDFB1B4578AD00BE7DE2 /* CalcModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalcModel.swift; sourceTree = "<group>"; };
 		F9C3AB201B31B5F7008DCA7E /* Calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Calculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9C3AB241B31B5F7008DCA7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F9C3AB251B31B5F7008DCA7E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 				F9C3AB2C1B31B5F7008DCA7E /* Images.xcassets */,
 				F9C3AB2E1B31B5F7008DCA7E /* LaunchScreen.xib */,
 				F9C3AB231B31B5F7008DCA7E /* Supporting Files */,
+				F91EDDFB1B4578AD00BE7DE2 /* CalcModel.swift */,
 			);
 			path = Calculator;
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F91EDDFC1B4578AD00BE7DE2 /* CalcModel.swift in Sources */,
 				F9C3AB281B31B5F7008DCA7E /* ViewController.swift in Sources */,
 				F9C3AB261B31B5F7008DCA7E /* AppDelegate.swift in Sources */,
 			);
@@ -405,6 +409,7 @@
 				F9C3AB411B31B5F7008DCA7E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F9C3AB421B31B5F7008DCA7E /* Build configuration list for PBXNativeTarget "CalculatorTests" */ = {
 			isa = XCConfigurationList;
@@ -413,6 +418,7 @@
 				F9C3AB441B31B5F7008DCA7E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
