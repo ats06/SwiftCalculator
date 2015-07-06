@@ -105,10 +105,10 @@ class CalcModel {
         let NUM_OF_DIGIT_MAX = 10
         var isCapa = false
         if let r = str.rangeOfString(".") {
-            if countElements(str) <= (NUM_OF_DIGIT_MAX + 1) {
+            if count(str) <= (NUM_OF_DIGIT_MAX + 1) {
                 isCapa = true
             }
-        } else if countElements(str) <= NUM_OF_DIGIT_MAX {
+        } else if count(str) <= NUM_OF_DIGIT_MAX {
             isCapa = true
         }
         return isCapa

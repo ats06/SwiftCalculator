@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>65FB3713-EA4F-451C-B59E-A32DA98ED010</string>
 	<key>IDESourceControlProjectName</key>
-	<string>Calculator</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>60260466B88D9B2BBDF7575ADC904CF4CFF06309</key>
 		<string>github.com:ats06/SwiftCalculator.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Calculator.xcodeproj</string>
+	<string>Calculator.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>60260466B88D9B2BBDF7575ADC904CF4CFF06309</key>
@@ -34,7 +34,7 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>60260466B88D9B2BBDF7575ADC904CF4CFF06309</string>
 			<key>IDESourceControlWCCName</key>
-			<string>Calculator</string>
+			<string>SwiftCalculator</string>
 		</dict>
 	</array>
 </dict>
