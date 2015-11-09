@@ -46,7 +46,7 @@ class CalcModel {
         let val2 = atof(operand2)
         var result: Double = 0.0
         var errorType = ErrorType.Ok
-        
+
         switch operatorType {
         case "+":
             result = val1 + val2
@@ -81,13 +81,14 @@ class CalcModel {
         }
     }
 
-    func makeTextForDisp(var value:Double) -> String {
+    func makeTextForDisp( value:Double) -> String {
         var valueStr = cutoffDecimalZero(String("\(value)"))  // ".0"落とす
         if !isInCapacity(valueStr) {
             // 10桁超えた場合は指数表示にして丸める
             valueStr = "".stringByAppendingFormat("%e", value)
             let r = valueStr.rangeOfString("e")
-            let idx = advance(r!.startIndex, 0)
+//            let idx = advance(r!.startIndex, 0)
+            let idx = r!.startIndex.advancedBy(0)
             let editedStr = cutoffDecimalZero(valueStr.substringToIndex(idx)) + valueStr.substringFromIndex(idx)
             return editedStr
         }
@@ -105,10 +106,10 @@ class CalcModel {
         let NUM_OF_DIGIT_MAX = 10
         var isCapa = false
         if let r = str.rangeOfString(".") {
-            if count(str) <= (NUM_OF_DIGIT_MAX + 1) {
+            if str.characters.count <= (NUM_OF_DIGIT_MAX + 1) {
                 isCapa = true
             }
-        } else if count(str) <= NUM_OF_DIGIT_MAX {
+        } else if str.characters.count <= NUM_OF_DIGIT_MAX {
             isCapa = true
         }
         return isCapa

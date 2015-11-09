@@ -60,7 +60,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
     // 表示文字列に押された数値を追加
     func addDigitString(base: String, add:String) -> String {
-        var appendedStr = base + add
+        let appendedStr = base + add
         if calcModel.isInCapacity(appendedStr) {
             return appendedStr
         }
@@ -121,7 +121,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     // 'TAX'ボタン
     @IBAction func buttonTax(sender: AnyObject) {
         calcModel.operand1 = display.text!
-        calcModel.operand2 = String("\((100.0 + atof(taxTextField.text)) / 100.0)")
+        calcModel.operand2 = String("\((100.0 + atof(taxTextField.text!)) / 100.0)")
         operatorLabel.text = "×"
         Calculate()
     }
@@ -130,7 +130,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func Calculate() {
         calcModel.operatorType = operatorLabel.text!
         
-        var out = calcModel.calculate()
+        let out = calcModel.calculate()
         display.text = out.result
 
         if out.error == CalcModel.ErrorType.Ok {
